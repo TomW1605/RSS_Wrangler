@@ -1,0 +1,18 @@
+port: 8080
+base_url: /
+
+feeds:
+    feed_1:
+        name: # Your feed name here
+        url: # Your feed URL here
+        img_filter: # Image src filter here
+
+    feed_2:
+        name: # Your feed name here
+        url: # Your feed URL here
+        img_filter: # Image src filter here
+
+custom_feeds:
+    feed_3:
+        name: # Your custom feed name here
+        url: # Your custom feed URL here

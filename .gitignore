@@ -1,0 +1,5 @@
+/config.yml
+/custom_feeds/*
+*.xml
+/.idea/*
+

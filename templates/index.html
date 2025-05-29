@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Proxmox VMs</title>
+    <script>
+        async function fetchVMs(tag) {
+            const response = await fetch(`{{ base_url }}vms?tag=${tag}`);
+            const data = await response.json();
+            const vmsList = document.getElementById('vms-list');
+            vmsList.innerHTML = '';
+            data.vms.forEach(vm => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    ${vm.name} (${vm.status})
+                    <button onclick="startVM(${vm.vmid})">Start</button>
+                    <button onclick="stopVM(${vm.vmid})">Stop</button>
+                    <button onclick="restartVM(${vm.vmid})">Restart</button>
+                `;
+                vmsList.appendChild(li);
+            });
+        }
+
+        async function startVM(vmid) {
+            await fetch(`{{ base_url }}start/${vmid}`, { method: 'POST' });
+            alert('VM started');
+        }
+
+        async function stopVM(vmid) {
+            await fetch(`{{ base_url }}stop/${vmid}`, { method: 'POST' });
+            alert('VM stopped');
+        }
+
+        async function restartVM(vmid) {
+            await fetch(`{{ base_url }}restart/${vmid}`, { method: 'POST' });
+            alert('VM restarted');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchVMs('room_vm');
+        });
+    </script>
+</head>
+<body>
+    <h1>VMs with tag 'your_tag'</h1>
+    <ul id="vms-list"></ul>
+</body>
+</html>
