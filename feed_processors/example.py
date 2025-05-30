@@ -1,6 +1,7 @@
-def process_feed(url, output_file, **kwargs):
+def process_feed(name, url, output_file, **kwargs):
     """
     generate an RSS feed XML string from the URL
+    :param name: name of the feed, as specified in the config file
     :param url: URL of the page to generate the feed from
     :param output_file: file to store past feeds in to avoid regenerating data
     :param kwargs: any arguments from the `args` section of the config file

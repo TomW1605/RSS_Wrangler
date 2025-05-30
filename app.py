@@ -67,7 +67,7 @@ def feed(feed_path):
         return jsonify({"error": f"Feed processor `{feed_data['processor']}` does not have a `process_feed` function"}), 500
 
     try:
-        xml_data = feed_module.process_feed(feed_data["url"], f"{feed_name}.xml", **feed_data.get("args", {}))
+        xml_data = feed_module.process_feed(feed_data["name"], feed_data["url"], f"{feed_name}.xml", **feed_data.get("args", {}))
     except Exception as e:
         return jsonify({"error": f"Custom feed processing failed: `{str(e)}`"}), 500
 
