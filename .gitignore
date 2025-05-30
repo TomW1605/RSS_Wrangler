@@ -1,5 +1,5 @@
 /config.yml
-/custom_feeds/*
+/feed_processors/*
 *.xml
 /.idea/*
 

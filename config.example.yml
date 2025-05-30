@@ -4,15 +4,21 @@ base_url: /
 feeds:
     feed_1:
         name: # Your feed name here
+        processor: # Your processor script here
         url: # Your feed URL here
-        img_filter: # Image src filter here
+        args: # Additional arguments for the processor
+            arg1: # ...
 
-    feed_2:
-        name: # Your feed name here
-        url: # Your feed URL here
-        img_filter: # Image src filter here
+    type_1:
+        feed_2:
+            name: # Your feed name here
+            processor: # Your processor script here
+            url: # Your feed URL here
+            args: # Additional arguments for the processor, optional
+                arg1: # ...
 
-custom_feeds:
-    feed_3:
-        name: # Your custom feed name here
-        url: # Your custom feed URL here
+    type_2:
+        feed_3:
+            name: # Your feed name here
+            processor: # Your processor script here
+            url: # Your feed URL here
