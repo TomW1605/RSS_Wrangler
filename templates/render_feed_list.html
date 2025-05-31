@@ -1,0 +1,24 @@
+{% macro render_feed_list(feeds) %}
+    <ul class="feed-list">
+        {% for item in feeds %}
+            {% if item is string %}
+                <li class="feed-item">
+                    <img src="{{ url_for('static', filename='rss-icon.png') }}" alt="RSS" class="rss-icon">
+                    <a href="{{ item }}" class="feed-link">{{ item.split('/')[-1] }}</a>
+                </li>
+            {% else %}
+                {% for category, sub_feeds in item.items() %}
+                    <li>
+                        <h2>
+                            {% if category != '' %}
+                                📁
+                            {% endif %}
+                            {{ category if category != '' else 'Root' }}
+                        </h2>
+                        {{ render_feed_list(sub_feeds) }}
+                    </li>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endmacro %}

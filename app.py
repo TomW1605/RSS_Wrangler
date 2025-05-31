@@ -73,9 +73,35 @@ def dict_get_by_path(data, path, sep='/'):
         data = data[key]
     return data
 
+def get_feed_paths(config_feeds, base_url, current_path=""):
+    paths = []
+
+    for key, value in config_feeds.items():
+        new_path = f"{current_path}/{key}" if current_path else key
+
+        # If the value is a dictionary and has 'url' and 'processor', it's a feed configuration
+        if isinstance(value, dict) and 'url' in value and 'processor' in value:
+            # Ensure base_url starts and ends with '/'
+            clean_base_url = base_url.strip('/')
+            clean_base_url = f"/{clean_base_url}/" if clean_base_url else "/"
+
+            # Construct the full web path
+            feed_url = f"{clean_base_url}{new_path}.xml"
+            paths.append(feed_url)
+
+        # If it's a dictionary but not a feed config, recurse deeper
+        elif isinstance(value, dict):
+            paths.append({key: get_feed_paths(value, base_url, new_path)})
+
+    return paths
+
 @app.route(config["base_url"], methods=["GET"])
 def index():
-    return render_template("index.html")
+    reload_config()
+
+    feeds = get_feed_paths(config["feeds"], config["base_url"])
+
+    return render_template("index.html", feeds=feeds)
 
 @app.route(config["base_url"] + "<path:feed_path>.xml", methods=["GET"])
 def feed(feed_path):

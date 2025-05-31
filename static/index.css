@@ -1,0 +1,75 @@
+:root {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --feed-bg: #2d2d2d;
+    --link-color: #66b3ff;
+    --border-color: #404040;
+    --hover-bg: #383838;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    width: fit-content;
+    min-width: 50%;
+    margin: 20px auto;
+    padding: 0 20px;
+    line-height: 1.6;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+h1 {
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+h2 {
+    color: var(--text-color);
+    font-size: 1.2em;
+    margin: 10px 0;
+    padding: 8px 12px;
+    background-color: var(--feed-bg);
+    border-radius: 4px;
+}
+
+.feed-list {
+    list-style: none;
+    padding: 0;
+}
+
+.feed-item {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: var(--feed-bg);
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.feed-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.feed-link {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+.feed-link:hover {
+    text-decoration: underline;
+}
+
+.rss-icon {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 16px;
+    height: 16px;
+}
+
+.feed-list .feed-list {
+    margin-left: 20px;
+}
+
+.feed-list li {
+    margin: 10px 0;
+}

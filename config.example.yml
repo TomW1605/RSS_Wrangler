@@ -1,6 +1,10 @@
 port: 8080
 base_url: /
 
+auth: # details for nginx basic auth to put in the urls on the index page. exclude this section if you don't want to use basic auth
+    username: # Your username here
+    password: # Your password here
+
 feeds:
     feed_1:
         name: # Your feed name here
