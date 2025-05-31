@@ -1,10 +1,11 @@
 import importlib
+import inspect
 import os
 import shutil
 import traceback
 
 import yaml
-from flask import Flask, render_template, jsonify, Response
+from flask import Flask, render_template, jsonify, Response, request
 
 # Config setup
 if not os.path.exists('config.yml'):
@@ -56,6 +57,9 @@ def feed(feed_path):
     feed_data = dict_get_by_path(config["feeds"], f"{feed_path}")
     feed_name = feed_path.split('/')[-1]
 
+    if "args" not in feed_data:
+        feed_data["args"] = {}
+
     try:
         if feed_data["processor"].endswith('.py'):
             feed_data["processor"] = feed_data["processor"][:-3]
@@ -67,8 +71,18 @@ def feed(feed_path):
     if not hasattr(feed_module, 'process_feed'):
         return jsonify({"error": f"Feed processor `{feed_data['processor']}` does not have a `process_feed` function"}), 500
 
+    # TODO: store current feeds somewhere better
     try:
-        xml_data = feed_module.process_feed(feed_data["name"], feed_data["url"], f"{feed_name}.xml", **feed_data.get("args", {}))
+        query_args = request.args.to_dict()
+        for parameter_name, parameter in inspect.signature(feed_module.process_feed).parameters.items():
+            if parameter_name in request.args:
+                query_args[parameter_name] = request.args.get(parameter_name, default=query_args[parameter_name], type=parameter.annotation)
+        feed_data["args"] |= query_args
+    except Exception as e:
+        return jsonify({"error": f"Error processing query parameters: `{traceback.format_exc(0).strip()}`"}), 500
+
+    try:
+        xml_data = feed_module.process_feed(feed_data["name"], feed_data["url"], f"{feed_name}.xml", **feed_data["args"])
     except Exception as e:
         return jsonify({"error": f"Custom feed processing failed: `{traceback.format_exc(0).strip()}`"}), 500
 
