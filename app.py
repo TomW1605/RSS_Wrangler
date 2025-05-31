@@ -1,6 +1,7 @@
 import importlib
 import os
 import shutil
+import traceback
 
 import yaml
 from flask import Flask, render_template, jsonify, Response
@@ -61,7 +62,7 @@ def feed(feed_path):
         feed_module = importlib.import_module(f'feed_processors.{feed_data["processor"]}')
         importlib.reload(feed_module)
     except ImportError as e:
-        return jsonify({"error": f"Feed processor `{feed_data['processor']}` not found: {str(e)}"}), 500
+        return jsonify({"error": f"Feed processor `{feed_data['processor']}` not found: {traceback.format_exc(0).strip()}"}), 500
 
     if not hasattr(feed_module, 'process_feed'):
         return jsonify({"error": f"Feed processor `{feed_data['processor']}` does not have a `process_feed` function"}), 500
@@ -69,7 +70,7 @@ def feed(feed_path):
     try:
         xml_data = feed_module.process_feed(feed_data["name"], feed_data["url"], f"{feed_name}.xml", **feed_data.get("args", {}))
     except Exception as e:
-        return jsonify({"error": f"Custom feed processing failed: `{str(e)}`"}), 500
+        return jsonify({"error": f"Custom feed processing failed: `{traceback.format_exc(0).strip()}`"}), 500
 
     response = Response(xml_data, mimetype='application/xml')
     return response
