@@ -7,14 +7,29 @@ import traceback
 import yaml
 from flask import Flask, render_template, jsonify, Response, request
 
+# Setup folders
+CONFIG_FOLDER_PATH = os.getenv('CONFIG_PATH', "/config")
+FEED_PROCESSORS_FOLDER_PATH = os.path.join(CONFIG_FOLDER_PATH, "feed_processors")
+FEED_CACHE_FOLDER_PATH = os.path.join(CONFIG_FOLDER_PATH, "feed_cache")
+
+if not os.path.exists(CONFIG_FOLDER_PATH):
+    os.makedirs(CONFIG_FOLDER_PATH)
+
+if not os.path.exists(FEED_PROCESSORS_FOLDER_PATH):
+    os.makedirs(FEED_PROCESSORS_FOLDER_PATH)
+
+if not os.path.exists(FEED_CACHE_FOLDER_PATH):
+    os.makedirs(FEED_CACHE_FOLDER_PATH)
+
 # Config setup
-if not os.path.exists('config.yml'):
+CONFIG_FILE_PATH = os.path.join(CONFIG_FOLDER_PATH, "config.yml")
+if not os.path.exists(CONFIG_FILE_PATH):
     shutil.copyfile("config.example.yml", "config.yml")
 
 def reload_config():
     """Reload the configuration from config.yml."""
     global config
-    with open("config.yml", mode='r') as f:
+    with open(CONFIG_FILE_PATH, mode='r') as f:
         config = yaml.safe_load(f)
 
 reload_config()
@@ -71,7 +86,6 @@ def feed(feed_path):
     if not hasattr(feed_module, 'process_feed'):
         return jsonify({"error": f"Feed processor `{feed_data['processor']}` does not have a `process_feed` function"}), 500
 
-    # TODO: store current feeds somewhere better
     try:
         query_args = request.args.to_dict()
         for parameter_name, parameter in inspect.signature(feed_module.process_feed).parameters.items():
@@ -82,7 +96,7 @@ def feed(feed_path):
         return jsonify({"error": f"Error processing query parameters: `{traceback.format_exc(0).strip()}`"}), 500
 
     try:
-        xml_data = feed_module.process_feed(feed_data["name"], feed_data["url"], f"{feed_name}.xml", **feed_data["args"])
+        xml_data = feed_module.process_feed(feed_data["name"], feed_data["url"], f"{os.path.join(FEED_CACHE_FOLDER_PATH, feed_name)}.xml", **feed_data["args"])
     except Exception as e:
         return jsonify({"error": f"Custom feed processing failed: `{traceback.format_exc(0).strip()}`"}), 500
 
