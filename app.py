@@ -39,7 +39,7 @@ if os.path.exists(os.path.join(FEED_PROCESSORS_FOLDER_PATH, "requirements.txt"))
 # Config setup
 CONFIG_FILE_PATH = os.path.join(CONFIG_FOLDER_PATH, "config.yml")
 if not os.path.exists(CONFIG_FILE_PATH):
-    shutil.copyfile("config.example.yml", "config.yml")
+    shutil.copyfile("config.example.yml", CONFIG_FILE_PATH)
 
 def reload_config():
     """Reload the configuration from config.yml."""
