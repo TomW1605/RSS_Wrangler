@@ -1,3 +1,7 @@
+"""
+to use external libraries, add them to a `requirements.txt` file in the feed processor directory and restart the server.
+"""
+
 def process_feed(name, url, output_file, **kwargs):
     """
     generate an RSS feed XML string from the URL

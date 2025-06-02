@@ -2,6 +2,8 @@ import importlib
 import inspect
 import os
 import shutil
+import subprocess
+import sys
 import traceback
 
 import yaml
@@ -20,6 +22,19 @@ if not os.path.exists(FEED_PROCESSORS_FOLDER_PATH):
 
 if not os.path.exists(FEED_CACHE_FOLDER_PATH):
     os.makedirs(FEED_CACHE_FOLDER_PATH)
+
+# Processor folder setup
+EXAMPLE_FEED_PROCESSORS_FILE_PATH = os.path.join(FEED_PROCESSORS_FOLDER_PATH, "example_feed_processor.py")
+if not os.path.exists(EXAMPLE_FEED_PROCESSORS_FILE_PATH):
+    shutil.copyfile("example_feed_processor.py", EXAMPLE_FEED_PROCESSORS_FILE_PATH)
+open(os.path.join(FEED_PROCESSORS_FOLDER_PATH, "requirements.txt"), 'a').close()
+
+# Install feed processor requirements
+if os.path.exists(os.path.join(FEED_PROCESSORS_FOLDER_PATH, "requirements.txt")):
+    print("Installing feed processor requirements...")
+    requirements_file_path = os.path.join(FEED_PROCESSORS_FOLDER_PATH, "requirements.txt")
+    pip_command = f"{sys.executable} -m pip install --root-user-action ignore -r {requirements_file_path}"
+    subprocess.run(pip_command.split())
 
 # Config setup
 CONFIG_FILE_PATH = os.path.join(CONFIG_FOLDER_PATH, "config.yml")
