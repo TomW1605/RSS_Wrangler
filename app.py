@@ -145,4 +145,4 @@ def feed(feed_path):
     return response
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=config["port"], debug=True)
+    app.run(host="0.0.0.0", port=config["port"])
